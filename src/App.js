@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { commerce } from './lib/commerce';
-import { Cart, Navbar, Products } from './components'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Cart, Navbar, Products, Checkout } from './components'
 
 const App = () => {
 
@@ -72,6 +72,7 @@ const App = () => {
                             handleEmptyCart={handleEmptyCart}
                         />
                     } />
+                    <Route path='/checkout' element={<Checkout cart={cart} />} />
                 </Routes>
 
             </div>

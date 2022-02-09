@@ -5,9 +5,11 @@ import { Cart, Navbar, Products, Checkout } from './components'
 
 const App = () => {
 
-    // # State
+    // # States
     const [products, setProducts] = useState([])
     const [cart, setCart] = useState({})
+    const [order, setOrder] = useState({})
+    const [errorMessage, setErrorMessage] = useState('')
 
 
     // It fetches the products from the Commerce API.
@@ -47,6 +49,33 @@ const App = () => {
         setCart(cart)
     }
 
+    // Refresh the cart and update the cart state
+    const refreshCart = async () => {
+        const newCart = await commerce.cart.refresh()
+        setCart(newCart)
+    }
+
+
+    /**
+     * It captures the checkout.
+     * @param checkoutTokenId - The checkout token ID returned from the createCheckoutToken call.
+     * @param newOrder - The order object that will be sent to the merchant.
+     */
+    const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
+        console.log(`checkoutTokenId --> ${checkoutTokenId}`);
+        console.log(`newOrder --> ${newOrder}`);
+        try {
+            const incomingOrder = await commerce.checkout.capture(checkoutTokenId, newOrder)
+            console.log(incomingOrder)
+
+            setOrder(incomingOrder)
+            refreshCart()
+        } catch (error) {
+            console.log(error);
+            setErrorMessage(error.data.error.message)
+        }
+    }
+
 
     // EFFECT: 
     useEffect(() => {
@@ -63,7 +92,12 @@ const App = () => {
                 <Navbar totalItems={cart.total_items} />
 
                 <Routes>
-                    <Route path='/' element={<Products products={products} onAddToCart={handleAddToCart} />} />
+                    <Route path='/' element={
+                        <Products
+                            products={products}
+                            onAddToCart={handleAddToCart}
+                        />
+                    } />
                     <Route path='/cart' element={
                         <Cart
                             cart={cart}
@@ -72,7 +106,14 @@ const App = () => {
                             handleEmptyCart={handleEmptyCart}
                         />
                     } />
-                    <Route path='/checkout' element={<Checkout cart={cart} />} />
+                    <Route path='/checkout' element={
+                        <Checkout
+                            cart={cart}
+                            order={order}
+                            onCaptureCheckout={handleCaptureCheckout}
+                            error={errorMessage}
+                        />
+                    } />
                 </Routes>
 
             </div>

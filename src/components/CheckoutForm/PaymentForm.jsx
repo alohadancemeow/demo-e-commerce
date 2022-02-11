@@ -8,57 +8,92 @@ import Review from './Review'
 // load stripe
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY)
 
-const PaymentForm = ({ checkoutToken, shippingData, backStep, onCaptureCheckout, nextStep }) => {
+const PaymentForm = ({ checkoutToken, shippingData, backStep, onCaptureCheckout, nextStep, timeout }) => {
   console.log(shippingData);
+  console.log(checkoutToken);
 
+  // Handle submit
   const handleSubmit = async (e, elements, stripe) => {
     e.preventDefault()
 
-    if (!stripe || !elements) return
+    // if (!stripe || !elements) return
 
-    const cardElement = elements.getElement(CardElement)
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement
-    })
+    // const cardElement = elements.getElement(CardElement)
+    // const { error, paymentMethod } = await stripe.createPaymentMethod({
+    //   type: 'card',
+    //   card: cardElement
+    // })
 
-    if (error) {
-      console.log(error);
-    } else {
+    // if (error) {
+    //   console.log(error);
+    // } else {
 
-      // create orderData
-      const orderData = {
-        line_items: checkoutToken.live.line_items,
-        customer: {
-          firstname: shippingData.firstname,
-          lastname: shippingData.lastname,
-          email: shippingData.email
+    //   // create orderData
+    //   const orderData = {
+    //     line_items: checkoutToken.live.line_items,
+    //     customer: {
+    //       firstname: shippingData.firstname,
+    //       lastname: shippingData.lastname,
+    //       email: shippingData.email
+    //     },
+    //     shipping: {
+    //       name: 'Primary',
+    //       street: shippingData.address1,
+    //       town_city: shippingData.city,
+    //       country_state: shippingData.shippingSubdivision,
+    //       postal_zip_code: shippingData.zip,
+    //       conutry: shippingData.shippingCountry
+    //     },
+    //     fulfillment: {
+    //       shipping_method: shippingData.shippingOption
+    //     },
+    //     payment: {
+    //       gateway: 'stripe',
+    //       stripe: {
+    //         payment_method_id: paymentMethod.id
+    //       }
+    //     }
+    //   }
+
+
+    // Test payment gateway
+    const orderData = {
+      line_items: checkoutToken.live.line_items,
+      customer: {
+        firstname: shippingData.firstname,
+        lastname: shippingData.lastname,
+        email: shippingData.email
+      },
+      shipping: {
+        name: 'Primary',
+        street: shippingData.address1,
+        town_city: shippingData.city,
+        country_state: shippingData.shippingSubdivision,
+        postal_zip_code: shippingData.zip,
+        country: shippingData.shippingCountry
+      },
+      fulfillment: {
+        shipping_method: shippingData.shippingOption
+      },
+      payment: {
+        gateway: 'test_gateway',
+        card: {
+          number: '4242 4242 4242 4242',
+          expiry_month: '01',
+          expiry_year: '2023',
+          cvc: '123',
+          postal_zip_code: '94103',
         },
-        shipping: {
-          name: 'Primary',
-          street: shippingData.address1,
-          town_city: shippingData.city,
-          country_state: shippingData.shippingSubdivision,
-          postal_zip_code: shippingData.zip,
-          conutry: shippingData.shippingCountry
-        },
-        fulfillment: {
-          shipping_method: shippingData.shippingOption
-        },
-        payment: {
-          gateway: 'stripe',
-          stripe: {
-            payment_method_id: paymentMethod.id
-          }
-        }
       }
-
-      // call onCaptureCheckout, --> next
-      onCaptureCheckout(checkoutToken.id, orderData)
-      nextStep()
-
     }
+
+    // call onCaptureCheckout, --> next
+    onCaptureCheckout(checkoutToken.id, orderData)
+    timeout() //waiting... 3sec
+    nextStep()
+
   }
+
 
   return (
     <>
@@ -85,6 +120,6 @@ const PaymentForm = ({ checkoutToken, shippingData, backStep, onCaptureCheckout,
       </Elements>
     </>
   )
-};
+}
 
 export default PaymentForm;

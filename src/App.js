@@ -10,7 +10,8 @@ const App = () => {
     const [cart, setCart] = useState({})
     const [order, setOrder] = useState({})
     const [errorMessage, setErrorMessage] = useState('')
-
+    console.log('order', order);
+    console.log('cart', cart);
 
     // It fetches the products from the Commerce API.
     const fetchProducts = async () => {
@@ -82,9 +83,6 @@ const App = () => {
         fetchProducts()
         fetchCart()
     }, [])
-
-    // console.log(products);
-    // console.log(cart)
 
     return (
         <BrowserRouter>

@@ -26,7 +26,7 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
     const nextStep = () => setActiveStep(prevActiveStep => prevActiveStep + 1)
     const backStep = () => setActiveStep(prevActiveStep => prevActiveStep - 1)
     const next = (data) => {
-        console.log(data);
+        // console.log(data);
         setShippingData(data)
         nextStep()
     }
@@ -94,7 +94,7 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
                 navigate('/')
             }
         }
-        if (cart.line_items.length !== 0) {
+        if (cart.line_items) {
             generateToken()
         }
 

@@ -22,7 +22,7 @@ const AddressForm = ({ checkoutToken, next }) => {
     const { control, handleSubmit, formState: { errors } } = methods
 
     const onSubmit = data => {
-        console.log(data);
+        // console.log(data);
         next({
             ...data,
             shippingCountry,

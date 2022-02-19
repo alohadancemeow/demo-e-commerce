@@ -3,6 +3,8 @@ import { commerce } from './lib/commerce';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Cart, Navbar, Products, Checkout } from './components'
 
+import Layout from './components/Layout'
+
 const App = () => {
 
     // # States
@@ -63,11 +65,11 @@ const App = () => {
      * @param newOrder - The order object that will be sent to the merchant.
      */
     const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
-        // console.log(`checkoutTokenId --> ${checkoutTokenId}`);
-        // console.log(`newOrder --> ${newOrder}`);
+        console.log(`checkoutTokenId --> ${checkoutTokenId}`);
+        console.log(`newOrder --> ${newOrder}`);
         try {
             const incomingOrder = await commerce.checkout.capture(checkoutTokenId, newOrder)
-            // console.log(incomingOrder)
+            console.log(incomingOrder)
 
             setOrder(incomingOrder)
             refreshCart()
@@ -86,7 +88,7 @@ const App = () => {
 
     return (
         <BrowserRouter>
-            <div>
+            <Layout>
                 <Navbar totalItems={cart.total_items} />
 
                 <Routes>
@@ -114,7 +116,7 @@ const App = () => {
                     } />
                 </Routes>
 
-            </div>
+            </Layout>
         </BrowserRouter>
     )
 };
